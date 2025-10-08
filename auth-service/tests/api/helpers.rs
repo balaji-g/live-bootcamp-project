@@ -25,4 +25,44 @@ impl TestApp {
             .await
             .expect("Failed to execute request")
     }
+
+    pub async fn post_signup(&self) -> reqwest::Response {
+        self.http_client
+            .post(format!("{}/signup", &self.address))
+            .send()
+            .await
+            .expect("Failed to execute signup")
+    }
+
+    pub async fn get_login(&self) -> reqwest::Response {
+        self.http_client
+        .get(format!("{}/login", &self.address))
+        .send()
+        .await
+        .expect("Failed to execute login")
+    }
+
+    pub async fn post_logout(&self) -> reqwest::Response {
+        self.http_client
+        .post(format!("{}/logout", &self.address))
+        .send()
+        .await
+        .expect("Failed to execute logout")
+    }
+
+    pub async fn get_verify_token(&self) -> reqwest::Response {
+        self.http_client
+        .get(format!("{}/verify-token", &self.address))
+        .send()
+        .await
+        .expect("Failed to execute verify-token")
+    }
+
+    pub async fn get_verify_f2a(&self) -> reqwest::Response {
+        self.http_client
+        .get(format!("{}/verify-f2a", &self.address))
+        .send()
+        .await
+        .expect("Failed to execute verify-f2a")
+    }
 }
