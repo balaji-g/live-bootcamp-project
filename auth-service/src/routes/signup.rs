@@ -1,5 +1,15 @@
-use axum::{response::IntoResponse};
+use axum::{response::IntoResponse, Json};
 use reqwest::StatusCode;
-pub async fn signup() -> impl IntoResponse {
-    StatusCode::OK.into_response()
+use serde::Deserialize;
+
+#[derive(Deserialize)]
+pub struct SignupRequest {
+    pub email: String,
+    pub password: String,
+    #[serde(rename = "requires2FA")]
+    pub requires_2fa: bool,
+}
+
+pub async fn signup(Json(payload): Json<SignupRequest>) -> impl IntoResponse {
+    StatusCode::CREATED.into_response()
 }
