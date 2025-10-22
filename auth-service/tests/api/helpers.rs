@@ -1,4 +1,8 @@
 use auth_service::Application;
+use auth_service::app_state::AppState;
+use auth_service::services::HashmapUserStore;
+use std::sync::Arc;
+use tokio::sync::RwLock;
 use uuid::Uuid;
 
 pub struct TestApp {
@@ -8,7 +12,10 @@ pub struct TestApp {
 
 impl TestApp {
     pub async fn new() -> Self {
-        let app = Application::build("127.0.0.1:0")
+        let user_store = Arc::new(RwLock::new(HashmapUserStore::default()));
+        let app_state = AppState::new(user_store);
+
+        let app = Application::build(app_state, "127.0.0.1:0")
             .await
             .expect("Failed to build test app");
         let address = format!("http://{}", app.address.clone());
@@ -39,9 +46,9 @@ impl TestApp {
             .expect("Failed to execute signup")
     }
 
-    pub async fn get_login(&self) -> reqwest::Response {
+    pub async fn post_login(&self) -> reqwest::Response {
         self.http_client
-        .get(format!("{}/login", &self.address))
+        .post(format!("{}/login", &self.address))
         .send()
         .await
         .expect("Failed to execute login")
@@ -55,20 +62,20 @@ impl TestApp {
         .expect("Failed to execute logout")
     }
 
-    pub async fn get_verify_token(&self) -> reqwest::Response {
+    pub async fn post_verify_token(&self) -> reqwest::Response {
         self.http_client
-        .get(format!("{}/verify-token", &self.address))
+        .post(format!("{}/verify-token", &self.address))
         .send()
         .await
         .expect("Failed to execute verify-token")
     }
 
-    pub async fn get_verify_f2a(&self) -> reqwest::Response {
+    pub async fn post_verify_2fa(&self) -> reqwest::Response {
         self.http_client
-        .get(format!("{}/verify-f2a", &self.address))
+        .post(format!("{}/verify-2fa", &self.address))
         .send()
         .await
-        .expect("Failed to execute verify-f2a")
+        .expect("Failed to execute verify-2fa")
     }
 
     pub fn get_random_email() -> String {
