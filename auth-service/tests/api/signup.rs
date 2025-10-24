@@ -1,10 +1,10 @@
 use auth_service::{routes::signup::SignupResponse, ErrorResponse};
-use crate::helpers::TestApp;
+use crate::helpers::{get_random_email, TestApp};
 
 #[tokio::test]
 async fn signup_test() {
     let app = TestApp::new().await;
-    let _email = TestApp::get_random_email();
+    let _email = get_random_email();
     let test_cases = [
         serde_json::json!({
             "password": "12345678",
@@ -24,7 +24,7 @@ async fn signup_test() {
 #[tokio::test]
 async fn should_return_201_if_valid_input() {
     let app = TestApp::new().await;
-    let email = TestApp::get_random_email();
+    let email = get_random_email();
     
     let request_body = serde_json::json!({
         "email": email,
@@ -112,7 +112,7 @@ async fn should_return_400_if_invalid_input() {
 async fn should_return_409_if_email_already_exists() {
     // Call the signup route twice. The second request should fail with a 409 HTTP status code
     let app = TestApp::new().await;
-    let email = TestApp::get_random_email();
+    let email = get_random_email();
     
     let request_body = serde_json::json!({
         "email": email,

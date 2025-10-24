@@ -13,6 +13,7 @@ pub mod app_state;
 pub mod domain;
 pub mod services;
 pub mod routes;
+pub mod utils;
 use app_state::AppState;
 use domain::AuthAPIError;
 use crate::routes::{signup, login, logout, verify_token, verify_2fa};
@@ -27,6 +28,7 @@ impl IntoResponse for AuthAPIError {
         let (status, error_message) = match self {
             AuthAPIError::UserAlreadyExists => (StatusCode::CONFLICT, "User already exists"),
             AuthAPIError::InvalidCredentials => (StatusCode::BAD_REQUEST, "Invalid credentials"),
+            AuthAPIError::IncorrectCredentials => (StatusCode::UNAUTHORIZED, "Incorrect credentials"),
             AuthAPIError::UnexpectedError => {
                 (StatusCode::INTERNAL_SERVER_ERROR, "Unexpected error")
             }
